@@ -12,8 +12,6 @@
 * check the status of his/her leaves
 
 # Screenshots
-<div class="container">
-
    <div class="row">
        <div class="col">
           <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="800">
@@ -23,4 +21,4 @@
           <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="800">
         </div>
    </div>     
- </div>
+ 
