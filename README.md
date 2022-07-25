@@ -9,4 +9,4 @@
 * Login and View personal details
 * view number of days he can apply for leave 
 * apply for leave
-* check the status of his leave
+* check the status of his/her leaves
