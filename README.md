@@ -13,9 +13,9 @@
 
 # Screenshots
  <div class="row">
-    <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="500">
+    <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="600">
  </div>
  <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="500">
+    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
  </div>     
  
