@@ -16,10 +16,10 @@
 
    <div class="row">
        <div class="col">
-          <img src="images/loginPage.png" alt="LoginPage" width="300">
+          <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="300">
        </div>
         <div class="col">
-          <img src="images/AdminOpening.png" alt="LoginPage" width="300">
+          <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="300">
         </div>
    </div>
   <div class="row">
