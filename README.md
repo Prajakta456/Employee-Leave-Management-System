@@ -19,13 +19,13 @@
     <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/createEmployee.png" alt="LoginPage" width="600">
  </div>     
  <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/updateEmployee.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/AdminEmployeeDetails.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
     <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
