@@ -1,4 +1,4 @@
-# EmployeeManagementSystem
+# Employee Leave Management System
 Admin functionalities
 1.add new employees
 2.update details of existing employees
