@@ -14,11 +14,11 @@
 # Screenshots
    <div class="row">
        <div class="column">
-          <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="800">
+          <img src="imagesEmployee/loginPage.png" alt="LoginPage" style="width:100%">
        </div>
    
        <div class="column">
-          <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="800">
+          <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" style="width:100%">
         </div>
    </div>     
  
