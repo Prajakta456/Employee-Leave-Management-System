@@ -13,11 +13,11 @@
 
 # Screenshots
    <div class="row">
-       <div class="col">
+       <div class="column">
           <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="800">
        </div>
    
-       <div class="col">
+       <div class="column">
           <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="800">
         </div>
    </div>     
