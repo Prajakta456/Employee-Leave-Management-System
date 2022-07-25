@@ -18,8 +18,9 @@
        <div class="row">
           <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="800">
        </div>
-   </div>
+   
        <div class="row">
           <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="800">
         </div>
+   </div>     
  </div>
