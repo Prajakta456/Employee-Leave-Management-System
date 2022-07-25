@@ -12,13 +12,10 @@
 * check the status of his/her leaves
 
 # Screenshots
-   <div class="row">
-       <div class="column">
-          <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="500">
-       </div>
-   
-       <div class="column">
-          <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="500">
-        </div>
-   </div>     
+ <div class="row">
+    <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="500">
+ </div>
+ <div class="row">  
+    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="500">
+ </div>     
  
