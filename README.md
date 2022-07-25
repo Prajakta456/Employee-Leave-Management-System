@@ -13,10 +13,10 @@
 
 # Screenshots
  <div class="row">
-    <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/login.png" alt="loginPage" width="600">
  </div>
  <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/employeesList.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
     <img src="imagesEmployee/createEmployee.png" alt="LoginPage" width="600">
@@ -25,11 +25,23 @@
     <img src="imagesEmployee/updateEmployee.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
-    <img src="imagesEmployee/AdminEmployeeDetails.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/enterleaveDetails.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
+    <img src="imagesEmployee/employeeDetails.png" alt="LoginPage" width="600">
  </div>     
   <div class="row">  
-    <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="600">
- </div>     
+    <img src="imagesEmployee/personalDetails.png" alt="LoginPage" width="600">
+ </div>  
+ <div class="row">  
+    <img src="imagesEmployee/leaveDetails.png" alt="LoginPage" width="600">
+ </div>  
+<div class="row">  
+    <img src="imagesEmployeee/applyLeave.png" alt="LoginPage" width="600">
+ </div>  
+ <div class="row">  
+    <img src="imagesEmployeee/message.png" alt="LoginPage" width="600">
+ </div>  
+ <div class="row">  
+    <img src="imagesEmployeee/viewLeaveDetails.png" alt="LoginPage" width="600">
+ </div>  
