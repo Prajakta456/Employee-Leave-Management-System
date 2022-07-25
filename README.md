@@ -14,12 +14,12 @@
 # Screenshots
 <div class="container">
 
-   <div class="col">
-       <div class="row">
+   <div class="row">
+       <div class="col">
           <img src="imagesEmployee/loginPage.png" alt="LoginPage" width="800">
        </div>
    
-       <div class="row">
+       <div class="col">
           <img src="imagesEmployee/AdminOpening.png" alt="LoginPage" width="800">
         </div>
    </div>     
