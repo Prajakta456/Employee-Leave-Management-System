@@ -27,6 +27,10 @@
   <div class="row">  
     <img src="imagesEmployee/enterleaveDetails.png" alt="adminSetsLeave" width="700">
  </div>     
+ <div class="row">  
+    <img src="imagesEmployee/viewLeaveDetails.png" alt="viewLeaveDetailsPage" width="700">
+ </div>  
+
   <div class="row">  
     <img src="imagesEmployee/employeeDetails.png" alt="employeeLogin" width="700">
  </div>     
@@ -42,6 +46,4 @@
  <div class="row">  
     <img src="imagesEmployee/message.png" alt="showingMessage" width="700">
  </div>  
- <div class="row">  
-    <img src="imagesEmployee/viewLeaveDetails.png" alt="viewLeaveDetailsPage" width="700">
- </div>  
+ 
