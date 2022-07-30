@@ -283,7 +283,7 @@ public class AdminController {
 			    break;
 		   }//close switch case
 		     if(ct>0) {
-		    	 model.addAttribute("message","Youhave succesfully applied for leave!");
+		    	 model.addAttribute("message","You have succesfully applied for leave!");
 				   model.addAttribute("employee", e);
 				   return "employeeDetails";
 		     }
