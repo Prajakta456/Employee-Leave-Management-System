@@ -46,4 +46,6 @@
  <div class="row">  
     <img src="imagesEmployee/message.png" alt="showingMessage" width="700">
  </div>  
- 
+ <div class="row">
+    <img src="imagesEmployee/Screenshot (561).png" alt="viewLeaveStatus" width="700">
+ </div>
