@@ -7,9 +7,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.employee.employeeManagement.entity.ApplyLeave;
@@ -39,7 +39,7 @@ public class AdminController {
 	private ApplyLeaveService alService;
 
 	// get list of employees
-	@RequestMapping(value = "/employees", method = RequestMethod.GET)
+	@GetMapping("/employees")
 	public String listEmployee(Model model, HttpSession session) {
 
 		if (session.getAttribute("id") != null) {
@@ -52,7 +52,7 @@ public class AdminController {
 	}
 
 	// add new employee form
-	@RequestMapping(value = "/employees/new", method = RequestMethod.GET)
+	@GetMapping("/employees/new")
 	public String newEmployee(Model model,HttpSession session) {
  
 		if (session.getAttribute("id") != null) {
@@ -61,7 +61,7 @@ public class AdminController {
 		Employee emp = new Employee();
 		model.addAttribute("employee", emp);
 		model.addAttribute("listRoles", li);
-		model.addAttribute("title", "Create new Employee");
+		model.addAttribute("title", "Add new Employee");
 		return "employeeform";
 		} else
 			return "login";
@@ -69,7 +69,7 @@ public class AdminController {
 	}
 
 	// save a new employee
-	@RequestMapping(value = "/employees/save", method = RequestMethod.POST)
+	@PostMapping("/employees/save")
 	public String saveEmployee(Employee employee, RedirectAttributes redirectAtt,HttpSession session) throws EmployeeNotFoundException {
 		if (session.getAttribute("id") != null) {
 		  empService.saveEmployee(employee);
@@ -81,7 +81,7 @@ public class AdminController {
 	}
 
 	// accept leave details for all employees
-	@RequestMapping(value = "/employees/Setleave", method = RequestMethod.GET)
+	@GetMapping("/employees/Setleave")
 	public String enterLeaveDetails(Model model,HttpSession session) {
 		if (session.getAttribute("id") != null) {
 		model.addAttribute("leave", new LeaveInformation());
@@ -92,7 +92,7 @@ public class AdminController {
 	}
 
 	//save leave details in Leave_Information table
-	@RequestMapping(value = "/employees/leave/save", method = RequestMethod.POST)
+	@PostMapping("/employees/leave/save")
 	public String saveLeaveInformation(Model model,LeaveInformation obj,HttpSession session) {
 
 		if (session.getAttribute("id") != null) {
@@ -105,7 +105,7 @@ public class AdminController {
 	}
 
    //for employee= view leave details to apply for leave	
-	@RequestMapping(value = "/employees/leave/view/{empId}", method = RequestMethod.GET)
+	@GetMapping("/employees/leave/view/{empId}")
 	public String viewLeaveDetails(Model model, @PathVariable(name = "empId") int empId,HttpSession session) throws EmployeeNotFoundException,java.sql.SQLSyntaxErrorException {
 		if (session.getAttribute("id") != null) {
 			try {
@@ -134,7 +134,7 @@ public class AdminController {
 	}
 	
 	//set those leaves for all the employees
-	@RequestMapping(value = "/leaveDetails/save", method = RequestMethod.GET)
+	@GetMapping("/leaveDetails/save")
 	public String saveLeaveForEmployees(RedirectAttributes redirectAtt,HttpSession session,Model model) {
 
 		if (session.getAttribute("id") != null) {
@@ -162,7 +162,7 @@ public class AdminController {
 	}
 
 	//view leave details for admin	
-	@RequestMapping(value = "/leaveDetails/view", method = RequestMethod.GET)
+	@GetMapping("/leaveDetails/view")
 	public String getLeaveDetails(Model model,HttpSession session) {
 
 		
@@ -192,7 +192,7 @@ public class AdminController {
 	}
 
 	//employee can check the status of all the leaves that he applied for
-	@RequestMapping(value = "/employees/leave/leaveStatus/{employeeId}", method = RequestMethod.GET)
+	@GetMapping("/employees/leave/leaveStatus/{employeeId}")
 	public String checkStatus(Model model, @PathVariable(name = "employeeId") int empid, RedirectAttributes att,HttpSession session) throws EmployeeNotFoundException {
         
 		if (session.getAttribute("id") != null) {
@@ -214,7 +214,7 @@ public class AdminController {
 	}
 
 	//employee apply leave form getting saved and diffrenet validations are being checked
-	@RequestMapping(value = "/employees/apply/save", method = RequestMethod.POST)
+	@PostMapping("/employees/apply/save")
 	public String saveEmpLeave(Model model, ApplyLeave obj, RedirectAttributes att,HttpSession session) throws EmployeeNotFoundException {
 
 		if (session.getAttribute("id") != null) {
@@ -309,7 +309,7 @@ public class AdminController {
 	}
 
 	//admin can view pending leaves of employees
-	@RequestMapping(value = "/employees/leave/allleaves", method = RequestMethod.GET)
+	@GetMapping(value = "/employees/leave/allleaves")
 	public String viewLeave(Model model,HttpSession session) {
 
 		if (session.getAttribute("id") != null) {
@@ -323,7 +323,7 @@ public class AdminController {
 	
 
 	//admin can approve pending leave and then that leave will be decremented from table storing leaves for employees
-	@RequestMapping(value = "/employees/leave/allleaves/updatepending/{leaveid}", method = RequestMethod.GET)
+	@GetMapping("/employees/leave/allleaves/updatepending/{leaveid}")
 	public String updatePendingLeave(@PathVariable(name = "leaveid") int leaveid, RedirectAttributes att,HttpSession session) {
 
 	if (session.getAttribute("id") != null) {

@@ -16,6 +16,9 @@ public class Role {
 		this.roleName = roleName;
 	}
 
+	public Role() {
+		
+	}
 	public int getId() {
 		return id;
 	}
@@ -32,9 +35,7 @@ public class Role {
 		this.roleName = roleName;
 	}
 
-	public Role() {
-	
-	}
+	//toString()
 
 	@Override
 	public String toString() {

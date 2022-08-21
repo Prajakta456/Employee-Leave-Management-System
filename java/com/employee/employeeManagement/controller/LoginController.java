@@ -1,11 +1,10 @@
 package com.employee.employeeManagement.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +21,12 @@ public class LoginController {
 	@Autowired
 	public EmployeeService empService;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@GetMapping("/")
 	public String login() {
 		return "login";
 	}
 
-	@RequestMapping(value = "/adminlogin", method = RequestMethod.POST)
+	@PostMapping("/adminlogin")
 	public String adminLogin(@RequestParam String empId, @RequestParam String password, Model model) {
 
 		try {
@@ -62,7 +61,7 @@ public class LoginController {
 		return "login";
 	}
 
-	@RequestMapping(value = "/adminlogout", method = RequestMethod.GET)
+	@GetMapping("/adminlogout")
 	public String logout(Model model, SessionStatus status) {
 		status.setComplete();
 		return "login";

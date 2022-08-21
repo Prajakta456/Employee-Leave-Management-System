@@ -70,9 +70,27 @@ public class Employee {
 			
 			@Column(length=10,nullable=false,unique=true)
 			private String panNo;
-				
+			
+			@Column(nullable=false)
+			private String bloodGroup;
+			
+			@Column(nullable=false)
+			private String infoToRelativeName;
+			
+			@Column(nullable=false)
+			private String infoToRelativePhoneNo;
+			
+			@Column(nullable=false)
+			private String infoToColleagueName;
+			
+			@Column(nullable=false)
+			private String infoToColleaguePhone;
+			
 			@ManyToMany
-			@JoinTable(name="employee_roles",joinColumns=@JoinColumn(name="employee_id"),inverseJoinColumns=@JoinColumn(name="role_id"))
+			
+			@JoinTable(name="employee_roles",
+			joinColumns=@JoinColumn(name="employee_id"),
+			inverseJoinColumns=@JoinColumn(name="role_id"))
 			private Set<Role> roles;
 			
 			public void addRole(Role obj) {
@@ -247,20 +265,7 @@ public class Employee {
 				this.infoToColleaguePhone = infoToColleaguePhone;
 			}
 
-			@Column(nullable=false)
-			private String bloodGroup;
-			
-			@Column(nullable=false)
-			private String infoToRelativeName;
-			
-			@Column(nullable=false)
-			private String infoToRelativePhoneNo;
-			
-			@Column(nullable=false)
-			private String infoToColleagueName;
-			
-			@Column(nullable=false)
-			private String infoToColleaguePhone;
+		
 }
 
 	
