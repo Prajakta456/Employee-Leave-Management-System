@@ -309,7 +309,7 @@ public class AdminController {
 	}
 
 	//admin can view pending leaves of employees
-	@GetMapping(value = "/employees/leave/allleaves")
+	@GetMapping("/employees/leave/allleaves")
 	public String viewLeave(Model model,HttpSession session) {
 
 		if (session.getAttribute("id") != null) {
