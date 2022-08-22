@@ -12,6 +12,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+/*
+@Entity annotation defines that a class can be mapped to a table. And that is it, it is just a marker, like for example Serializable interface.
+*/
 @Entity
 @Table(name = "EmployeeDetails")
 public class Employee {
