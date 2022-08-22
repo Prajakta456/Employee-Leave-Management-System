@@ -61,6 +61,14 @@ public class LoginController {
 		return "login";
 	}
 
+	/*void setComplete()
+Mark the current handler's session processing as complete, allowing for cleanup of session attributes.*/
+	/*public interface SessionStatus
+Simple interface that can be injected into handler methods, allowing them to signal that their session 
+processing is complete. The handler invoker may then follow up with appropriate cleanup, e.g. of session
+attributes which have been implicitly created during this handler's processing (according to the @SessionAttributes annotation).*/
+	
+	
 	@GetMapping("/adminlogout")
 	public String logout(Model model, SessionStatus status) {
 		status.setComplete();
