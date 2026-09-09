@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>ListOfEmployees</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+</head>
+<body>
+<div th:replace="navbar" class="container">
+
+</div>
+<div class="container">
+<br>
+<h1>Employee Details</h1>
+
+<div th:if="${message!=null}" class="alert alert-success text-center">
+  [[${message}]]
+</div>
+<br>
+
+	<a th:href="@{/employees/new}" class="btn btn-primary">Create New Employee</a>
+	<br>
+	<table class="table table-hover">
+	
+		<tr>
+			<th>Employee ID</th>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Salary</th>
+			<th>Email</th>
+			<th>Phone Number</th>
+			<th>Gender</th>
+			<th>Department Name</th>
+			<th>Role Name</th>
+			<th>Action</th>
+		</tr>
+		<tr th:each="employee:${employees}">
+			<td>[[${employee.employeeId}]]</td>
+			<td>[[${employee.firstName}]]</td>
+			<td>[[${employee.lastName}]]</td>
+			<td>[[${employee.salary}]]</td>
+			<td>[[${employee.email}]]</td>
+			<td>[[${employee.phoneNo}]]</td>
+			<td>[[${employee.gender}]]</td>
+			<td>[[${employee.departmentName}]]</td>
+			<td>[[${employee.roles}]]
+			
+			
+			<td><a href="" class="btn btn-success" th:href="@{'/employees/update/'+${employee.employeeId}}">
+			Update
+			</a></td>
+			
+		</tr>
+	</table>
+	
+	</div>
+</body>
+</html>

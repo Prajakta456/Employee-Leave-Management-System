@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>List Of Employees</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+</head>
+<body>
+
+<div th:replace="navbarEmployee" class="container">
+
+</div>
+
+<div class="container">
+<h1 align="center">Personal Details</h1>
+
+<div th:if="${message!=null}" class="alert alert-success text-center">
+  [[${message}]]
+</div>
+
+    <div class="border border-secondary rounded p-3" style="max-width:750px; margin:0 auto">
+	
+	<table class="table table-success table-striped">
+	 <tr>
+	<th>Employee ID</th>
+	<td>[[${employee.employeeId}]]</td>
+	</tr>
+	<tr>
+	
+	<tr>
+	<th>First Name</th>
+	<td>[[${employee.firstName}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Last Name</th>
+	<td>[[${employee.lastName}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Present Address</th>
+	<td>[[${employee.address}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Birth Date</th>
+	<td>[[${employee.birthDate}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Email</th>
+	<td>[[${employee.email}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Phone Number</th>
+	<td>[[${employee.phoneNo}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Aadhaar Number </th>
+	<td>[[${employee.adharNo}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Passport Number</th>
+	<td>[[${employee.passportNo}]]</td>
+	</tr>
+	
+	<tr>
+	<th>PAN Number</th>
+	<td>[[${employee.panNo}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Blood Group</th>
+	<td>[[${employee.address}]]</td>
+	</tr>
+
+    <tr>
+	<th>Name of Relative to contact in case of emergency</th>
+	<td>[[${employee.infoToRelativeName}]]</td>
+	</tr>
+	
+	<tr>
+	<th>Contact Number of Relative to contact in case of emergency</th>
+	<td>[[${employee.infoToRelativePhoneNo}]]</td>
+	</tr>
+		
+	<tr>
+	<th>Name of Colleague to contact in case of emergency</th>
+	<td>[[${employee.infoToColleagueName}]]</td>
+	</tr>
+
+    <tr>
+	<th>Contact Number of Colleague to contact in case of emergency</th>
+	<td>[[${employee.infoToColleaguePhone}]]</td> 
+	</tr>
+	
+	</table>
+	</div> 
+	</div>
+</body>
+</html>

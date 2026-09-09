@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>View Admin Leave Details</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+</head>
+
+<body>
+
+<div th:replace="navbar" class="container">
+
+</div>
+  <div class="container">  
+  <br>
+<h1>Leave Details</h1>
+<br>
+<div th:if="${message!=null}" class="alert alert-success text-center">
+  [[${message}]]
+</div>
+    
+	<table class="table table-hover">
+		<tr>
+			<th>Earned Leave</th>
+			<th>Covid Leave</th>
+			<th>Incidental Leave</th>
+			<th>Leave without pay</th>
+			<th>short leave</th>
+		</tr>
+
+	    <tr>
+	    	<td>[[${leave.earnedLeave}]]</td>
+			<td>[[${leave.covidLeave}]]</td>
+			<td>[[${leave.inicidentalLeave}]]</td>
+			<td>[[${leave.leaveWithoutPay}]]</td>
+			<td>[[${leave.shortLeave}]]</td>
+			
+		</tr>
+	</table>
+	
+	
+	
+	<div align="center">
+		
+	<a th:href="@{/leaveDetails/save}"><button class="btn btn-primary">Set Leaves for All Employees</button></a>
+	<br>
+	<br>
+	<br>
+	<a th:href="@{/employees/leave/allleaves}">
+	<button class="btn btn-primary">View Pending Leaves</button>
+	</a>
+	</div>
+	
+	</div>
+</body>
+</html>

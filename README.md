@@ -87,7 +87,7 @@ Also, because you're using a local in-memory Caffeine cache, remember that if yo
                          │ EmployeeService     │
                          │ LeaveService        │
                          │ LeaveEmployeeService│
-                         │ ApplyLeaveService   │
+                         │ employeeManagement.service.ApplyLeaveService   │
                          └──────────┬──────────┘
                                     │
                     ┌───────────────┴───────────────┐
@@ -118,6 +118,6 @@ Also, because you're using a local in-memory Caffeine cache, remember that if yo
 | `LeaveService.saveLeaveDetails()`                | `leaveInformation` | saved leave ID |
 | `LeaveEmployeeService.getEmployeeLeaveDetails()` | `employeeLeave`    | employee ID    |
 | `LeaveEmployeeService.saveLeaveInfo()`           | `employeeLeave`    | employee ID    |
-| `ApplyLeaveService.findLeaveForEmployeeId()`     | `employeeLeaves`   | employee ID    |
-| `ApplyLeaveService.getLeaveByLeaveId()`          | `applyLeaveById`   | leave ID       |
-| `ApplyLeaveService.saveEmployeeLeave()`          | `applyLeaveById`   | leave ID       |
+| `employeeManagement.service.ApplyLeaveService.findLeaveForEmployeeId()`     | `employeeLeaves`   | employee ID    |
+| `employeeManagement.service.ApplyLeaveService.getLeaveByLeaveId()`          | `applyLeaveById`   | leave ID       |
+| `employeeManagement.service.ApplyLeaveService.saveEmployeeLeave()`          | `applyLeaveById`   | leave ID       |
