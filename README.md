@@ -71,3 +71,38 @@
 Keep the controller responsible for HTTP/UI handling and keep caching in the service layer. That's a much cleaner separation of concerns.
 
 Also, because you're using a local in-memory Caffeine cache, remember that if you run multiple instances of this application, each instance gets its own cache. For a single-instance employee-management project, that's perfectly reasonable. For multiple application instances, you'd generally move toward a distributed cache such as Redis.
+
+Controller
+│
+├── EmployeeController
+├── LoginController
+└── AdminController
+│
+↓
+Service
+│
+├── EmployeeService
+│      ├── @Cacheable employees
+│      └── @Cacheable roles
+│
+├── LeaveService
+│      └── @Cacheable leaveInformation
+│
+├── LeaveEmployeeService
+│      └── @Cacheable employeeLeave
+│
+└── ApplyLeaveService
+├── @Cacheable employeeLeaves
+└── @Cacheable applyLeaveById
+│
+↓
+Repository
+│
+├── EmployeeRepository
+├── RoleRepo
+├── LeaveInformationRepo
+├── LeaveEmployeeRepo
+└── ApplyLeaveRepo
+│
+↓
+Database
