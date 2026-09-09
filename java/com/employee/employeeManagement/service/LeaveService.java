@@ -1,38 +1,61 @@
 package com.employee.employeeManagement.service;
+
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
 import com.employee.employeeManagement.entity.LeaveInformation;
 import com.employee.employeeManagement.repository.LeaveInformationRepo;
 
 @Service
 public class LeaveService {
 
-	@Autowired
-	private LeaveInformationRepo lRepo;
-	
-    public LeaveInformation saveLeaveDetails(LeaveInformation lI) {
-		
-    	LeaveInformation leave=lRepo.save(lI);
-		return leave;		
-	}
-    
+    private final LeaveInformationRepo lRepo;
+
+    public LeaveService(LeaveInformationRepo lRepo) {
+        this.lRepo = lRepo;
+    }
+
+    // Save or update leave information
+    @CachePut(
+            value = "leaveInformation",
+            key = "#result.id"
+    )
+    public LeaveInformation saveLeaveDetails(
+            LeaveInformation leaveInformation) {
+
+        return lRepo.save(leaveInformation);
+    }
+
+    // Get the latest leave information
+    //
+    // This method is intentionally NOT cached because
+    // it returns the latest record.
     public LeaveInformation getLeaveDetails() {
-    	try {
-    	   List<LeaveInformation> l=(List<LeaveInformation>) lRepo.findAll();
-    	   return l.get(l.size()-1);
-    	}
-    	catch(Exception e) {
-    		return null;
-    	}
-    	   	
+
+        List<LeaveInformation> leaves =
+                (List<LeaveInformation>) lRepo.findAll();
+
+        if (leaves.isEmpty()) {
+            return null;
+        }
+
+        return leaves.get(leaves.size() - 1);
     }
-    
+
+    // Get leave information by ID
+    @Cacheable(
+            value = "leaveInformation",
+            key = "#id"
+    )
     public LeaveInformation getLeaveDetailsById(int id) {
-    	
-    	LeaveInformation obj=lRepo.findById(id).get();
-    	return obj;
-    	
+
+        System.out.println(
+                "Fetching leave information from DB: " + id);
+
+        return lRepo.findById(id)
+                .orElse(null);
     }
-    
 }

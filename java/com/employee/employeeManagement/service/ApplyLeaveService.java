@@ -1,51 +1,80 @@
-package com.employee.employeeManagement.service;
-import java.util.ArrayList;
+```java
+        package com.employee.employeeManagement.service;
+
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+
 import com.employee.employeeManagement.entity.ApplyLeave;
 import com.employee.employeeManagement.repository.ApplyLeaveRepo;
+
 @Service
 public class ApplyLeaveService {
 
-	@Autowired
-	private ApplyLeaveRepo repo;
-		
-	public List<ApplyLeave> getAllEmployeeLeave(){
-		
-		return (List<ApplyLeave>)repo.findAll();
-	}
-	
-    public List<ApplyLeave> findLeaveForEmployeeId(int id) {
-		List<ApplyLeave> li=new ArrayList<ApplyLeave>();
-    	
-		for(ApplyLeave obj:getAllEmployeeLeave()) {
-			if(obj.getEmployeeId()==id) {
-				li.add(obj);
-			}
-		}
-		
-		return li;
-	}
-	
-	public ApplyLeave saveEmployeeLeave(ApplyLeave obj) {
-		ApplyLeave emp=repo.save(obj);
-		return emp;		
-	}
+    private final ApplyLeaveRepo repo;
 
-	
-	public List<ApplyLeave> getAllPendingLeave(){
-		List<ApplyLeave> li=new ArrayList<>();
-		for(ApplyLeave obj:getAllEmployeeLeave()) {
-			if(obj.getLeaveStatus().equalsIgnoreCase("PENDING"))
-				li.add(obj);
-		}
-	    return li;
-	}
-	
-	
-	public ApplyLeave getLeaveByLeaveId(int id) {
-		return repo.findById(id).get();
-	}
-	
+    public ApplyLeaveService(ApplyLeaveRepo repo) {
+        this.repo = repo;
+    }
+
+    // Get all employee leave applications
+    public List<ApplyLeave> getAllEmployeeLeave() {
+        return (List<ApplyLeave>) repo.findAll();
+    }
+
+    // Get leave applications for a particular employee
+    @Cacheable(value = "employeeLeaves", key = "#id")
+    public List<ApplyLeave> findLeaveForEmployeeId(int id) {
+
+        System.out.println(
+                "Fetching employee leaves from DB: " + id);
+
+        return repo.findByEmployeeId(id);
+    }
+
+    // Save or update leave application
+    //
+    // 1. Updates the individual leave cache
+    // 2. Clears the employee's leave-list cache because
+    //    the list has changed
+    @Caching(
+            put = @CachePut(
+                    value = "applyLeaveById",
+                    key = "#result.leaveId"
+            ),
+            evict = @CacheEvict(
+                    value = "employeeLeaves",
+                    key = "#result.employeeId"
+            )
+    )
+    public ApplyLeave saveEmployeeLeave(ApplyLeave obj) {
+
+        return repo.save(obj);
+    }
+
+    // Get all pending leave applications
+    public List<ApplyLeave> getAllPendingLeave() {
+
+        return getAllEmployeeLeave()
+                .stream()
+                .filter(leave ->
+                        "PENDING".equalsIgnoreCase(
+                                leave.getLeaveStatus()))
+                .toList();
+    }
+
+    // Get leave application by leave ID
+    @Cacheable(value = "applyLeaveById", key = "#id")
+    public ApplyLeave getLeaveByLeaveId(int id) {
+
+        System.out.println(
+                "Fetching leave from DB: " + id);
+
+        return repo.findById(id).orElse(null);
+    }
 }
+```
