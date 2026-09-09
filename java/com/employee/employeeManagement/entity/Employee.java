@@ -1,276 +1,109 @@
 package com.employee.employeeManagement.entity;
+
+import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/*
-@Entity annotation defines that a class can be mapped to a table. And that is it, it is just a marker, like for example Serializable interface.
-*/
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "EmployeeDetails")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Employee {
-		
-			@Id
-			@GeneratedValue(strategy = GenerationType.IDENTITY)
-			private int employeeId;
-			
-			@NotNull
-		    @Size(max = 65)
-			private String firstName;
-			
-			@NotNull
-		    @Size(max = 65)
-			private String lastName;
-			
-			private Double salary;
-						
-			@NotNull
-			@Email
-			@Size(max = 100)
-			@Column(unique = true)
-			private String email;
-			
-			@NotNull
-			@Size(max = 64)
-			private String password;
-			
-			@NotNull
-			@Email
-			@Size(max = 20)
-			@Column(unique = true)
-			private String phoneNo;
-			
-			private String gender;
-			
-			@NotNull
-			@Size(max = 70)
-			private String departmentName;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int employeeId;
 
-			@Column(length=200,nullable=false)
-			private String address;
-			
-			@Column(nullable=false)
-			private String birthDate;
-			
-			@Column(nullable=false)
-			private String nationality;
-			
-			@Column(length=12,nullable=false,unique=true)
-			private String adharNo;
-			
-			@Column(length=12,nullable=false,unique=true)
-			private String passportNo;
-			
-			@Column(length=10,nullable=false,unique=true)
-			private String panNo;
-			
-			@Column(nullable=false)
-			private String bloodGroup;
-			
-			@Column(nullable=false)
-			private String infoToRelativeName;
-			
-			@Column(nullable=false)
-			private String infoToRelativePhoneNo;
-			
-			@Column(nullable=false)
-			private String infoToColleagueName;
-			
-			@Column(nullable=false)
-			private String infoToColleaguePhone;
-			
-			@ManyToMany
-			
-			@JoinTable(name="employee_roles",
-			joinColumns=@JoinColumn(name="employee_id"),
-			inverseJoinColumns=@JoinColumn(name="role_id"))
-			private Set<Role> roles;
-			
-			public void addRole(Role obj) {
-				this.roles.add(obj);
-			}
-			
-			public Set<Role> getRoles() {
-				return roles;
-			}
+	@NotNull
+	@Size(max = 65)
+	private String firstName;
 
-			public void setRoles(Set<Role> roles) {
-				this.roles = roles;
-			}	
-			
-			public int getEmployeeId() {
-				return employeeId;
-			}
+	@NotNull
+	@Size(max = 65)
+	private String lastName;
 
-			public void setEmployeeId(int employeeId) {
-				this.employeeId = employeeId;
-			}
+	private Double salary;
 
-			public String getFirstName() {
-				return firstName;
-			}
+	@NotNull
+	@Email
+	@Size(max = 100)
+	@Column(unique = true)
+	private String email;
 
-			public void setFirstName(String firstName) {
-				this.firstName = firstName;
-			}
+	@NotNull
+	@Size(max = 64)
+	private String password;
 
-			public String getLastName() {
-				return lastName;
-			}
+	@NotNull
+	@Size(max = 20)
+	@Column(unique = true)
+	private String phoneNo;
 
-			public void setLastName(String lastName) {
-				this.lastName = lastName;
-			}
+	private String gender;
 
-			public Double getSalary() {
-				return salary;
-			}
+	@NotNull
+	@Size(max = 70)
+	private String departmentName;
 
-			public void setSalary(Double salary) {
-				this.salary = salary;
-			}
+	@Column(length = 200, nullable = false)
+	private String address;
 
-			public String getEmail() {
-				return email;
-			}
+	@Column(nullable = false)
+	private String birthDate;
 
-			public void setEmail(String email) {
-				this.email = email;
-			}
+	@Column(nullable = false)
+	private String nationality;
 
-			public String getPassword() {
-				return password;
-			}
+	@Column(length = 12, nullable = false, unique = true)
+	private String adharNo;
 
-			public void setPassword(String password) {
-				this.password = password;
-			}
+	@Column(length = 12, nullable = false, unique = true)
+	private String passportNo;
 
-			public String getPhoneNo() {
-				return phoneNo;
-			}
+	@Column(length = 10, nullable = false, unique = true)
+	private String panNo;
 
-			public void setPhoneNo(String phoneNo) {
-				this.phoneNo = phoneNo;
-			}
+	@Column(nullable = false)
+	private String bloodGroup;
 
-			public String getGender() {
-				return gender;
-			}
+	@Column(nullable = false)
+	private String infoToRelativeName;
 
-			public void setGender(String gender) {
-				this.gender = gender;
-			}
+	@Column(nullable = false)
+	private String infoToRelativePhoneNo;
 
-			public String getDepartmentName() {
-				return departmentName;
-			}
+	@Column(nullable = false)
+	private String infoToColleagueName;
 
-			public void setDepartmentName(String departmentName) {
-				this.departmentName = departmentName;
-			}
+	@Column(nullable = false)
+	private String infoToColleaguePhone;
 
-			public String getAddress() {
-				return address;
-			}
+	@ManyToMany
+	@JoinTable(
+			name = "employee_roles",
+			joinColumns = @JoinColumn(name = "employee_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Set<Role> roles = new HashSet<>();
 
-			public void setAddress(String address) {
-				this.address = address;
-			}
-
-			public String getBirthDate() {
-				return birthDate;
-			}
-
-			public void setBirthDate(String birthDate) {
-				this.birthDate = birthDate;
-			}
-
-			public String getNationality() {
-				return nationality;
-			}
-
-			public void setNationality(String nationality) {
-				this.nationality = nationality;
-			}
-
-			public String getAdharNo() {
-				return adharNo;
-			}
-
-			public void setAdharNo(String adharNo) {
-				this.adharNo = adharNo;
-			}
-
-			public String getPassportNo() {
-				return passportNo;
-			}
-
-			public void setPassportNo(String passportNo) {
-				this.passportNo = passportNo;
-			}
-
-			public String getPanNo() {
-				return panNo;
-			}
-
-			public void setPanNo(String panNo) {
-				this.panNo = panNo;
-			}
-
-			public String getBloodGroup() {
-				return bloodGroup;
-			}
-
-			public void setBloodGroup(String bloodGroup) {
-				this.bloodGroup = bloodGroup;
-			}
-
-			public String getInfoToRelativeName() {
-				return infoToRelativeName;
-			}
-
-			public void setInfoToRelativeName(String infoToRelativeName) {
-				this.infoToRelativeName = infoToRelativeName;
-			}
-
-			public String getInfoToRelativePhoneNo() {
-				return infoToRelativePhoneNo;
-			}
-
-			public void setInfoToRelativePhoneNo(String infoToRelativePhoneNo) {
-				this.infoToRelativePhoneNo = infoToRelativePhoneNo;
-			}
-
-			public String getInfoToColleagueName() {
-				return infoToColleagueName;
-			}
-
-			public void setInfoToColleagueName(String infoToColleagueName) {
-				this.infoToColleagueName = infoToColleagueName;
-			}
-
-			public String getInfoToColleaguePhone() {
-				return infoToColleaguePhone;
-			}
-
-			public void setInfoToColleaguePhone(String infoToColleaguePhone) {
-				this.infoToColleaguePhone = infoToColleaguePhone;
-			}
-
-		
+	public void addRole(Role role) {
+		this.roles.add(role);
+	}
 }
-
-	
-
