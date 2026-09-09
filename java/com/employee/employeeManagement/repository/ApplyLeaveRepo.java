@@ -1,11 +1,12 @@
 package com.employee.employeeManagement.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import com.employee.employeeManagement.entity.ApplyLeave;
 
-@Repository
-public interface ApplyLeaveRepo extends CrudRepository<ApplyLeave,Integer>{
+public interface ApplyLeaveRepo extends CrudRepository<ApplyLeave, Integer> {
 
+    List<ApplyLeave> findByEmployeeId(int employeeId);
 }

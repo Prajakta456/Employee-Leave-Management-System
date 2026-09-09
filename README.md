@@ -11,6 +11,24 @@
 * apply for leave
 * check the status of his/her leaves
 
+                    Controller
+                        |
+                        ↓
+                 EmployeeService
+                        |
+                 @Cacheable
+                        |
+                        ↓
+               ┌─────────────────┐
+               │ Caffeine Cache  │
+               └─────────────────┘
+                        |
+                   Cache miss
+                        |
+                        ↓
+                    Database
+
+
 # Screenshots
  <div class="row">
     <img src="imagesEmployee/login.png" alt="loginPage" width="700">
@@ -49,3 +67,7 @@
  <div class="row">
     <img src="imagesEmployee/leaveStatus.png" alt="viewLeaveStatus" width="700">
  </div>
+
+Keep the controller responsible for HTTP/UI handling and keep caching in the service layer. That's a much cleaner separation of concerns.
+
+Also, because you're using a local in-memory Caffeine cache, remember that if you run multiple instances of this application, each instance gets its own cache. For a single-instance employee-management project, that's perfectly reasonable. For multiple application instances, you'd generally move toward a distributed cache such as Redis.
