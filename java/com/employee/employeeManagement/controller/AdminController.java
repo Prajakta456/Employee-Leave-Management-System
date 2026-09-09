@@ -1,10 +1,10 @@
 package com.employee.employeeManagement.controller;
+
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.List;
+
 import javax.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.employee.employeeManagement.entity.ApplyLeave;
 import com.employee.employeeManagement.entity.Employee;
 import com.employee.employeeManagement.entity.LeaveInfoEmployees;
@@ -22,341 +23,478 @@ import com.employee.employeeManagement.service.ApplyLeaveService;
 import com.employee.employeeManagement.service.EmployeeService;
 import com.employee.employeeManagement.service.LeaveEmployeeService;
 import com.employee.employeeManagement.service.LeaveService;
+
 @SessionAttributes("id")
 @Controller
 public class AdminController {
 
-	@Autowired
-	private EmployeeService empService;
+    private final EmployeeService employeeService;
+    private final LeaveEmployeeService leaveEmployeeService;
+    private final LeaveService leaveService;
+    private final ApplyLeaveService applyLeaveService;
 
-	@Autowired
-	private LeaveEmployeeService lEmpService;
+    public AdminController(EmployeeService employeeService, LeaveEmployeeService leaveEmployeeService, LeaveService leaveService, ApplyLeaveService applyLeaveService) {
 
-	@Autowired
-	private LeaveService lservice;
+        this.employeeService = employeeService;
+        this.leaveEmployeeService = leaveEmployeeService;
+        this.leaveService = leaveService;
+        this.applyLeaveService = applyLeaveService;
+    }
 
-	@Autowired
-	private ApplyLeaveService alService;
+    // ---------------------------------------------------------
+    // Employee Management
+    // ---------------------------------------------------------
 
-	// get list of employees
-	@GetMapping("/employees")
-	public String listEmployee(Model model, HttpSession session) {
+    // Get list of employees
+    @GetMapping("/employees")
+    public String listEmployee(Model model, HttpSession session) {
 
-		if (session.getAttribute("id") != null) {
-			List<Employee> employees = empService.getAllEmployee();
-			model.addAttribute("employees", employees);
-			return "employeelist";
-		} else
-			return "login";
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
 
-	}
+        List<Employee> employees = employeeService.getAllEmployee();
 
-	// add new employee form
-	@GetMapping("/employees/new")
-	public String newEmployee(Model model,HttpSession session) {
- 
-		if (session.getAttribute("id") != null) {
-		List<Role> li = empService.getRoles();
+        model.addAttribute("employees", employees);
 
-		Employee emp = new Employee();
-		model.addAttribute("employee", emp);
-		model.addAttribute("listRoles", li);
-		model.addAttribute("title", "Add new Employee");
-		return "employeeform";
-		} else
-			return "login";
+        return "employeelist";
+    }
 
-	}
+    // Add new employee form
+    @GetMapping("/employees/new")
+    public String newEmployee(Model model, HttpSession session) {
 
-	// save a new employee
-	@PostMapping("/employees/save")
-	public String saveEmployee(Employee employee, RedirectAttributes redirectAtt,HttpSession session) throws EmployeeNotFoundException {
-		if (session.getAttribute("id") != null) {
-		  empService.saveEmployee(employee);
-		  redirectAtt.addFlashAttribute("message", "Employee has been saved succesfully");
-		  return "redirect:/employees";
-		}
-		else
-			return "login";
-	}
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
 
-	// accept leave details for all employees
-	@GetMapping("/employees/Setleave")
-	public String enterLeaveDetails(Model model,HttpSession session) {
-		if (session.getAttribute("id") != null) {
-		model.addAttribute("leave", new LeaveInformation());
-		return "enterLeaveDetails";
-		}
-		else
-			return "login";
-	}
+        List<Role> roles = employeeService.getRoles();
 
-	//save leave details in Leave_Information table
-	@PostMapping("/employees/leave/save")
-	public String saveLeaveInformation(Model model,LeaveInformation obj,HttpSession session) {
+        Employee employee = new Employee();
 
-		if (session.getAttribute("id") != null) {
-		   lservice.saveLeaveDetails(obj);
-		   model.addAttribute("leave", obj);
-		   return "leaveDetails";	
-		}
-		else
-			return "login";
-	}
+        model.addAttribute("employee", employee);
+        model.addAttribute("listRoles", roles);
+        model.addAttribute("title", "Add new Employee");
 
-   //for employee= view leave details to apply for leave	
-	@GetMapping("/employees/leave/view/{empId}")
-	public String viewLeaveDetails(Model model, @PathVariable(name = "empId") int empId,HttpSession session) throws EmployeeNotFoundException,java.sql.SQLSyntaxErrorException {
-		if (session.getAttribute("id") != null) {
-			try {
-			      if(lservice.getLeaveDetails().equals(null)==false) {
-						Employee em=empService.findEmployeeById(empId);
-				        LeaveInfoEmployees obj = lEmpService.getEmployeeLeaveDetails(empId);
-						model.addAttribute("leave", obj);
-				        model.addAttribute("employee", em);
-                        return "EmployeeleaveDetails";
-				 }
-			}
-			catch(Exception e) {
-				Employee em=empService.findEmployeeById(empId);
-				model.addAttribute("employee",em);
-				model.addAttribute("message","Leave Details are not yet set");
-				return "employeeDetails";
-			}
-			Employee em=empService.findEmployeeById(empId);
-			model.addAttribute("employee",em);
-			model.addAttribute("message","Leave Details are not yet set");
-			return "employeeDetails";
-		}//close if
-		else
-		return "login";
-		
-	}
-	
-	//set those leaves for all the employees
-	@GetMapping("/leaveDetails/save")
-	public String saveLeaveForEmployees(RedirectAttributes redirectAtt,HttpSession session,Model model) {
+        return "employeeform";
+    }
 
-		if (session.getAttribute("id") != null) {
-		 
-			LeaveInformation obj = lservice.getLeaveDetails();
-     		List<Employee> listEmp = empService.getAllEmployee();
-	     	for (Employee emp : listEmp) {
-       			LeaveInfoEmployees leaveForEmp = new LeaveInfoEmployees();
-      			leaveForEmp.setEmployeeId(emp.getEmployeeId());
-		    	leaveForEmp.setCovidLeave(obj.getCovidLeave());
-			    leaveForEmp.setEarnedLeave(obj.getEarnedLeave());
-		    	leaveForEmp.setInicidentalLeave(obj.getInicidentalLeave());
-			    leaveForEmp.setLeaveWithoutPay(obj.getLeaveWithoutPay());
-			    leaveForEmp.setShortLeave(obj.getShortLeave());
-       			lEmpService.saveLeaveInfo(leaveForEmp);
-		    
-	     	}
-            model.addAttribute("message", "Leave For Employees set successfully");
-            List<Employee> employees = empService.getAllEmployee();
-			model.addAttribute("employees", employees);
-			return "employeelist";
-		   }
-		else
-			return "login";
-	}
+    // Save employee
+    @PostMapping("/employees/save")
+    public String saveEmployee(Employee employee, RedirectAttributes redirectAttributes, HttpSession session) throws EmployeeNotFoundException {
 
-	//view leave details for admin	
-	@GetMapping("/leaveDetails/view")
-	public String getLeaveDetails(Model model,HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
 
-		
-		if (session.getAttribute("id") != null) {
-			 try {
-			     if(lservice.getLeaveDetails().equals(null)==false){
-			    	 System.out.print(lservice.getLeaveDetails());
-			    	 model.addAttribute("leave", lservice.getLeaveDetails());
-			         return "leaveDetails";
-			     }
-			}
-			catch(Exception e) {   
-				 model.addAttribute("message","You have not yet set the leave details");
-				 List<Employee> employees = empService.getAllEmployee();
-					model.addAttribute("employees", employees);
-					return "employeelist";
-			    
-			 }
-			 model.addAttribute("message","You have not yet set the leave details");
-			 List<Employee> employees = empService.getAllEmployee();
-				model.addAttribute("employees", employees);
-				return "employeelist";
-			
-		}//close if for session
-		else
-			return "login";
-	}
+        employeeService.saveEmployee(employee);
 
-	//employee can check the status of all the leaves that he applied for
-	@GetMapping("/employees/leave/leaveStatus/{employeeId}")
-	public String checkStatus(Model model, @PathVariable(name = "employeeId") int empid, RedirectAttributes att,HttpSession session) throws EmployeeNotFoundException {
-        
-		if (session.getAttribute("id") != null) {
-		    if(alService.findLeaveForEmployeeId(empid)!=null) {
-		       List<ApplyLeave> obj = alService.findLeaveForEmployeeId(empid);
-		        model.addAttribute("applyLeaves", obj);
-		        return "checkLeaveStatus";
-		     }
-		     else {
-			    Employee e=empService.findEmployeeById(empid);
-			    model.addAttribute("message","You have not applied for leave yet!");
-		      	model.addAttribute("employee",e);
-			    return "employeeDetails";
-		     }
-		}
-		else
-			return "login";
-		
-	}
+        redirectAttributes.addFlashAttribute("message", "Employee has been saved successfully");
 
-	//employee apply leave form getting saved and diffrenet validations are being checked
-	@PostMapping("/employees/apply/save")
-	public String saveEmpLeave(Model model, ApplyLeave obj, RedirectAttributes att,HttpSession session) throws EmployeeNotFoundException {
+        return "redirect:/employees";
+    }
 
-		if (session.getAttribute("id") != null) {
-		   int i = obj.getEmployeeId();
-		   Employee e=empService.findEmployeeById(i);
-		   LeaveInfoEmployees lobj = lEmpService.getEmployeeLeaveDetails(i);
-		   ChronoLocalDate currentDate= LocalDate.from(ZonedDateTime.now());
-		   String lDate=obj.getFromDate();
-		   LocalDate leaveDate=null;
-		   try {
-		    leaveDate = LocalDate.parse(lDate);
-		   }
-		   catch(Exception exc) {
-			   model.addAttribute("message","You did not enter the leave in correct format!Please try again");
-			   model.addAttribute("employee", e);
-			   return "employeeDetails";
-		   }
-		   if(leaveDate.isAfter(currentDate)||leaveDate.equals(currentDate)) {
-		       
-			   String type = obj.getLeaveCategory();
-	    	   int ct = 0;
-	   	       switch (type) {
-    		    case "Earned Leave":
-			    if (lobj.getEarnedLeave() >= obj.getNoOfDays()) {
-				    System.out.print("Earned leave!");
-				    obj.setLeaveStatus("PENDING");
-			   	   	  alService.saveEmployeeLeave(obj);
-				    ct++;
-			    }
-			    break;
-	    	
-    		    case "Covid Leave":
-			    if (lobj.getCovidLeave() >= obj.getNoOfDays()) {
-			    	obj.setLeaveStatus("PENDING");
-			   	   	  alService.saveEmployeeLeave(obj);
-				    System.out.print("covid leave!");
-				    ct++;
-			     }
-			    break;
-		    
-    		    case "Incidental Leave":
-			    if(lobj.getInicidentalLeave() >= obj.getNoOfDays()) {
-			    	obj.setLeaveStatus("PENDING");
-			   	   	  alService.saveEmployeeLeave(obj);
-				   System.out.print("IL leave!");
-			  	   ct++;
-		    	}
-		    	break;
-		    
-    		    case "Leave Without Pay":
-			     if(lobj.getLeaveWithoutPay() >= obj.getNoOfDays()) {
-			    	 obj.setLeaveStatus("PENDING");
-			   	   	  alService.saveEmployeeLeave(obj);
-				    System.out.print("LWP leave!");
-				     ct++;
-			     }
-			     break;
-		    
-    		    case "Short Leave":
-			    if (lobj.getShortLeave() >= obj.getNoOfDays()) {
-			    	obj.setLeaveStatus("PENDING");
-			   	   	  alService.saveEmployeeLeave(obj);
-				   System.out.print("short leave!");
-				   ct++;
-			    }
-			    break;
-		   }//close switch case
-		     if(ct>0) {
-		    	 model.addAttribute("message","You have succesfully applied for leave!");
-				   model.addAttribute("employee", e);
-				   return "employeeDetails";
-		     }
-	   	      
-		     else if (ct == 0) {
-			     model.addAttribute("message", "You don't have sufficient leave in this category");
-        	     model.addAttribute("employee", e);
-		         return "employeeDetails";
-		     }
-		       model.addAttribute("message","You did not enter the leave from date currectly!Please try again");
-			   model.addAttribute("employee", e);
-			   return "employeeDetails";
-			  
-		   }//close if
-		   model.addAttribute("message","You did not enter the leave from date currectly!Please try again");
-		   model.addAttribute("employee", e);
-		   return "employeeDetails";
-		  
-		}//close if for session
-		else
-		return "login";
-		
-	}
+    // ---------------------------------------------------------
+    // Leave Information
+    // ---------------------------------------------------------
 
-	//admin can view pending leaves of employees
-	@GetMapping("/employees/leave/allleaves")
-	public String viewLeave(Model model,HttpSession session) {
+    // Open leave information form
+    @GetMapping("/employees/Setleave")
+    public String enterLeaveDetails(Model model, HttpSession session) {
 
-		if (session.getAttribute("id") != null) {
-		   List<ApplyLeave> obj = alService.getAllPendingLeave();
-		   model.addAttribute("pendingLeaves", obj);
-	    	return "viewPendingLeaves";
-		}
-		else
-			return "login";
-	}
-	
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
 
-	//admin can approve pending leave and then that leave will be decremented from table storing leaves for employees
-	@GetMapping("/employees/leave/allleaves/updatepending/{leaveid}")
-	public String updatePendingLeave(@PathVariable(name = "leaveid") int leaveid, RedirectAttributes att,HttpSession session) {
+        model.addAttribute("leave", new LeaveInformation());
 
-	if (session.getAttribute("id") != null) {
-		ApplyLeave obj = alService.getLeaveByLeaveId(leaveid);
-		int i = obj.getEmployeeId();
-		String typ = obj.getLeaveCategory();
+        return "enterLeaveDetails";
+    }
 
-		LeaveInfoEmployees lobj = lEmpService.getEmployeeLeaveDetails(i);
-		obj.setLeaveStatus("APPROVED");
-		switch (typ) {
-		case "Earned Leave":
-			lobj.setEarnedLeave(lobj.getEarnedLeave() - obj.getNoOfDays());
-			break;
-		case "CovidLeave":
-			lobj.setCovidLeave(lobj.getCovidLeave() - obj.getNoOfDays());
-			break;
-		case "Incidental Leave":
-			lobj.setInicidentalLeave(lobj.getInicidentalLeave() - obj.getNoOfDays());
-			break;
-		case "Leave Without Pay":
-			lobj.setLeaveWithoutPay(lobj.getLeaveWithoutPay() - obj.getNoOfDays());
-			break;
-		case "Short Leave":
-			lobj.setShortLeave(lobj.getShortLeave() - obj.getNoOfDays());
-			break;
-		}
+    // Save general leave information
+    @PostMapping("/employees/leave/save")
+    public String saveLeaveInformation(Model model, LeaveInformation leaveInformation, HttpSession session) {
 
-		lEmpService.saveLeaveInfo(lobj);
-		alService.saveEmployeeLeave(obj);
-		att.addAttribute("message", "Leave Approved");
-		return "redirect:/employees/leave/allleaves";
-	}//close if for session
-		else
-			return "login";
-	}
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        leaveService.saveLeaveDetails(leaveInformation);
+
+        model.addAttribute("leave", leaveInformation);
+
+        return "leaveDetails";
+    }
+
+    // Employee can view available leave details
+    @GetMapping("/employees/leave/view/{empId}")
+    public String viewLeaveDetails(Model model, @PathVariable(name = "empId") int empId, HttpSession session) throws EmployeeNotFoundException {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        Employee employee = employeeService.findEmployeeById(empId);
+
+        LeaveInformation leaveInformation = leaveService.getLeaveDetails();
+
+        if (leaveInformation == null) {
+
+            model.addAttribute("employee", employee);
+
+            model.addAttribute("message", "Leave Details are not yet set");
+
+            return "employeeDetails";
+        }
+
+        LeaveInfoEmployees employeeLeave = leaveEmployeeService.getEmployeeLeaveDetails(empId);
+
+        if (employeeLeave == null) {
+
+            model.addAttribute("employee", employee);
+
+            model.addAttribute("message", "Leave Details are not yet set");
+
+            return "employeeDetails";
+        }
+
+        model.addAttribute("leave", employeeLeave);
+        model.addAttribute("employee", employee);
+
+        return "EmployeeleaveDetails";
+    }
+
+    // ---------------------------------------------------------
+    // Set Leave Balance For Employees
+    // ---------------------------------------------------------
+
+    @GetMapping("/leaveDetails/save")
+    public String saveLeaveForEmployees(RedirectAttributes redirectAttributes, HttpSession session, Model model) {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        LeaveInformation leaveInformation = leaveService.getLeaveDetails();
+
+        if (leaveInformation == null) {
+
+            model.addAttribute("message", "Please set leave details first");
+
+            List<Employee> employees = employeeService.getAllEmployee();
+
+            model.addAttribute("employees", employees);
+
+            return "employeelist";
+        }
+
+        List<Employee> employees = employeeService.getAllEmployee();
+
+        for (Employee employee : employees) {
+
+            LeaveInfoEmployees leaveForEmployee = new LeaveInfoEmployees();
+
+            leaveForEmployee.setEmployeeId(employee.getEmployeeId());
+
+            leaveForEmployee.setCovidLeave(leaveInformation.getCovidLeave());
+
+            leaveForEmployee.setEarnedLeave(leaveInformation.getEarnedLeave());
+
+            leaveForEmployee.setInicidentalLeave(leaveInformation.getInicidentalLeave());
+
+            leaveForEmployee.setLeaveWithoutPay(leaveInformation.getLeaveWithoutPay());
+
+            leaveForEmployee.setShortLeave(leaveInformation.getShortLeave());
+
+            leaveEmployeeService.saveLeaveInfo(leaveForEmployee);
+        }
+
+        model.addAttribute("message", "Leave For Employees set successfully");
+
+        model.addAttribute("employees", employees);
+
+        return "employeelist";
+    }
+
+    // Admin can view general leave details
+    @GetMapping("/leaveDetails/view")
+    public String getLeaveDetails(Model model, HttpSession session) {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        LeaveInformation leaveInformation = leaveService.getLeaveDetails();
+
+        if (leaveInformation != null) {
+
+            model.addAttribute("leave", leaveInformation);
+
+            return "leaveDetails";
+        }
+
+        model.addAttribute("message", "You have not yet set the leave details");
+
+        List<Employee> employees = employeeService.getAllEmployee();
+
+        model.addAttribute("employees", employees);
+
+        return "employeelist";
+    }
+
+    // ---------------------------------------------------------
+    // Employee Leave Application
+    // ---------------------------------------------------------
+
+    // Employee can check status of all applied leaves
+    @GetMapping("/employees/leave/leaveStatus/{employeeId}")
+    public String checkStatus(Model model, @PathVariable(name = "employeeId") int employeeId, HttpSession session) throws EmployeeNotFoundException {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        List<ApplyLeave> leaves = applyLeaveService.findLeaveForEmployeeId(employeeId);
+
+        if (leaves != null && !leaves.isEmpty()) {
+
+            model.addAttribute("applyLeaves", leaves);
+
+            return "checkLeaveStatus";
+        }
+
+        Employee employee = employeeService.findEmployeeById(employeeId);
+
+        model.addAttribute("message", "You have not applied for leave yet!");
+
+        model.addAttribute("employee", employee);
+
+        return "employeeDetails";
+    }
+
+    // Save employee leave application
+    @PostMapping("/employees/apply/save")
+    public String saveEmpLeave(Model model, ApplyLeave applyLeave, RedirectAttributes redirectAttributes, HttpSession session) throws EmployeeNotFoundException {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        int employeeId = applyLeave.getEmployeeId();
+
+        Employee employee = employeeService.findEmployeeById(employeeId);
+
+        LeaveInfoEmployees employeeLeave = leaveEmployeeService.getEmployeeLeaveDetails(employeeId);
+
+        if (employeeLeave == null) {
+
+            model.addAttribute("message", "Leave Details are not yet set");
+
+            model.addAttribute("employee", employee);
+
+            return "employeeDetails";
+        }
+
+        LocalDate currentDate = LocalDate.now();
+
+        String leaveDateString = applyLeave.getFromDate();
+
+        LocalDate leaveDate;
+
+        try {
+
+            leaveDate = LocalDate.parse(leaveDateString);
+
+        } catch (Exception e) {
+
+            model.addAttribute("message", "You did not enter the leave in correct format! Please try again");
+
+            model.addAttribute("employee", employee);
+
+            return "employeeDetails";
+        }
+
+        if (leaveDate.isBefore(currentDate)) {
+
+            model.addAttribute("message", "You did not enter the leave from date correctly! Please try again");
+
+            model.addAttribute("employee", employee);
+
+            return "employeeDetails";
+        }
+
+        String leaveCategory = applyLeave.getLeaveCategory();
+
+        boolean leaveApplied = false;
+
+        switch (leaveCategory) {
+
+            case "Earned Leave":
+
+                if (employeeLeave.getEarnedLeave() >= applyLeave.getNoOfDays()) {
+
+                    leaveApplied = true;
+                }
+
+                break;
+
+            case "Covid Leave":
+
+                if (employeeLeave.getCovidLeave() >= applyLeave.getNoOfDays()) {
+
+                    leaveApplied = true;
+                }
+
+                break;
+
+            case "Incidental Leave":
+
+                if (employeeLeave.getInicidentalLeave() >= applyLeave.getNoOfDays()) {
+
+                    leaveApplied = true;
+                }
+
+                break;
+
+            case "Leave Without Pay":
+
+                if (employeeLeave.getLeaveWithoutPay() >= applyLeave.getNoOfDays()) {
+
+                    leaveApplied = true;
+                }
+
+                break;
+
+            case "Short Leave":
+
+                if (employeeLeave.getShortLeave() >= applyLeave.getNoOfDays()) {
+
+                    leaveApplied = true;
+                }
+
+                break;
+
+            default:
+
+                model.addAttribute("message", "Invalid leave category");
+
+                model.addAttribute("employee", employee);
+
+                return "employeeDetails";
+        }
+
+        if (leaveApplied) {
+
+            applyLeave.setLeaveStatus("PENDING");
+
+            applyLeaveService.saveEmployeeLeave(applyLeave);
+
+            model.addAttribute("message", "You have successfully applied for leave!");
+
+        } else {
+
+            model.addAttribute("message", "You don't have sufficient leave in this category");
+        }
+
+        model.addAttribute("employee", employee);
+
+        return "employeeDetails";
+    }
+
+    // ---------------------------------------------------------
+    // Admin Leave Approval
+    // ---------------------------------------------------------
+
+    // Admin can view pending leaves
+    @GetMapping("/employees/leave/allleaves")
+    public String viewLeave(Model model, HttpSession session) {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        List<ApplyLeave> pendingLeaves = applyLeaveService.getAllPendingLeave();
+
+        model.addAttribute("pendingLeaves", pendingLeaves);
+
+        return "viewPendingLeaves";
+    }
+
+    // Admin can approve pending leave
+    @GetMapping("/employees/leave/allleaves/updatepending/{leaveid}")
+    public String updatePendingLeave(@PathVariable(name = "leaveid") int leaveId, RedirectAttributes redirectAttributes, HttpSession session) {
+
+        if (session.getAttribute("id") == null) {
+            return "login";
+        }
+
+        ApplyLeave applyLeave = applyLeaveService.getLeaveByLeaveId(leaveId);
+
+        if (applyLeave == null) {
+            redirectAttributes.addFlashAttribute("message", "Leave not found");
+
+            return "redirect:/employees/leave/allleaves";
+        }
+
+        int employeeId = applyLeave.getEmployeeId();
+
+        LeaveInfoEmployees employeeLeave = leaveEmployeeService.getEmployeeLeaveDetails(employeeId);
+
+        if (employeeLeave == null) {
+            redirectAttributes.addFlashAttribute("message", "Employee leave details not found");
+
+            return "redirect:/employees/leave/allleaves";
+        }
+
+        String leaveCategory = applyLeave.getLeaveCategory();
+
+        switch (leaveCategory) {
+
+            case "Earned Leave":
+
+                employeeLeave.setEarnedLeave(employeeLeave.getEarnedLeave() - applyLeave.getNoOfDays());
+
+                break;
+
+            case "Covid Leave":
+
+                employeeLeave.setCovidLeave(employeeLeave.getCovidLeave() - applyLeave.getNoOfDays());
+
+                break;
+
+            case "Incidental Leave":
+
+                employeeLeave.setInicidentalLeave(employeeLeave.getInicidentalLeave() - applyLeave.getNoOfDays());
+
+                break;
+
+            case "Leave Without Pay":
+
+                employeeLeave.setLeaveWithoutPay(employeeLeave.getLeaveWithoutPay() - applyLeave.getNoOfDays());
+
+                break;
+
+            case "Short Leave":
+
+                employeeLeave.setShortLeave(employeeLeave.getShortLeave() - applyLeave.getNoOfDays());
+
+                break;
+
+            default:
+
+                redirectAttributes.addFlashAttribute("message", "Invalid leave category");
+
+                return "redirect:/employees/leave/allleaves";
+        }
+
+        applyLeave.setLeaveStatus("APPROVED");
+
+        leaveEmployeeService.saveLeaveInfo(employeeLeave);
+
+        applyLeaveService.saveEmployeeLeave(applyLeave);
+
+        redirectAttributes.addFlashAttribute("message", "Leave Approved");
+
+        return "redirect:/employees/leave/allleaves";
+    }
 }
