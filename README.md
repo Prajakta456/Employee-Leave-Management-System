@@ -72,37 +72,52 @@ Keep the controller responsible for HTTP/UI handling and keep caching in the ser
 
 Also, because you're using a local in-memory Caffeine cache, remember that if you run multiple instances of this application, each instance gets its own cache. For a single-instance employee-management project, that's perfectly reasonable. For multiple application instances, you'd generally move toward a distributed cache such as Redis.
 
-Controller
-│
-├── EmployeeController
-├── LoginController
-└── AdminController
-│
-↓
-Service
-│
-├── EmployeeService
-│      ├── @Cacheable employees
-│      └── @Cacheable roles
-│
-├── LeaveService
-│      └── @Cacheable leaveInformation
-│
-├── LeaveEmployeeService
-│      └── @Cacheable employeeLeave
-│
-└── ApplyLeaveService
-├── @Cacheable employeeLeaves
-└── @Cacheable applyLeaveById
-│
-↓
-Repository
-│
-├── EmployeeRepository
-├── RoleRepo
-├── LeaveInformationRepo
-├── LeaveEmployeeRepo
-└── ApplyLeaveRepo
-│
-↓
-Database
+                         ┌─────────────────────┐
+                         │   Controller Layer  │
+                         ├─────────────────────┤
+                         │ EmployeeController  │
+                         │ LoginController     │
+                         │ AdminController     │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │    Service Layer    │
+                         ├─────────────────────┤
+                         │ EmployeeService     │
+                         │ LeaveService        │
+                         │ LeaveEmployeeService│
+                         │ ApplyLeaveService   │
+                         └──────────┬──────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    │                               │
+                    ▼                               ▼
+          ┌──────────────────┐             ┌─────────────────┐
+          │   Cache Layer    │             │ Repository Layer│
+          ├──────────────────┤             ├─────────────────┤
+          │ employees        │             │ EmployeeRepo    │
+          │ roles            │             │ RoleRepo        │
+          │ leaveInformation │             │ LeaveInfoRepo   │
+          │ employeeLeave    │             │ LeaveEmployeeRepo│
+          │ employeeLeaves   │             │ ApplyLeaveRepo  │
+          │ applyLeaveById   │             └────────┬────────┘
+          └──────────────────┘                      │
+                                                    ▼
+                                           ┌─────────────────┐
+                                           │     Database    │
+                                           └─────────────────┘
+
+
+| Service                                          | Cache name         | Cache key      |
+| ------------------------------------------------ | ------------------ | -------------- |
+| `EmployeeService.findEmployeeById()`             | `employees`        | employee ID    |
+| `EmployeeService.saveEmployee()`                 | `employees`        | `employeeId`   |
+| `EmployeeService.getRoles()`                     | `roles`            | `"all"`        |
+| `LeaveService.getLeaveDetailsById()`             | `leaveInformation` | leave ID       |
+| `LeaveService.saveLeaveDetails()`                | `leaveInformation` | saved leave ID |
+| `LeaveEmployeeService.getEmployeeLeaveDetails()` | `employeeLeave`    | employee ID    |
+| `LeaveEmployeeService.saveLeaveInfo()`           | `employeeLeave`    | employee ID    |
+| `ApplyLeaveService.findLeaveForEmployeeId()`     | `employeeLeaves`   | employee ID    |
+| `ApplyLeaveService.getLeaveByLeaveId()`          | `applyLeaveById`   | leave ID       |
+| `ApplyLeaveService.saveEmployeeLeave()`          | `applyLeaveById`   | leave ID       |
