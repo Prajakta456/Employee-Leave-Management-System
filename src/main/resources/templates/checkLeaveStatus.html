@@ -1,73 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<title>Leave Status</title>
+    <meta charset="UTF-8">
+    <title>Leave Status</title>
 
-	<link rel="stylesheet"
-		  type="text/css"
-		  th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+    <link rel="stylesheet"
+          type="text/css"
+          th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
 
-	<script type="text/javascript"
-			th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}">
-	</script>
+    <script type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}">
+    </script>
 
-	<script type="text/javascript"
-			th:src="@{/webjars/jquery/3.6.0/jquery.min.js}">
-	</script>
+    <script type="text/javascript"
+            th:src="@{/webjars/jquery/3.6.0/jquery.min.js}">
+    </script>
 </head>
-
 <body>
-
 <div class="container">
+    <br>
+    <h2 class="text-center">Leave Status</h2>
+    <br>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Leave ID</th>
+            <th>Leave From Date</th>
+            <th>No. of Days of Leave</th>
+            <th>Leave Reason</th>
+            <th>Leave Category</th>
+            <th>Leave Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="applyLeave : ${applyLeaves}">
+            <td>[[${applyLeave.employeeId}]]</td>
+            <!-- FIXED: leaveId instead of leaveid -->
+            <td>[[${applyLeave.leaveId}]]</td>
 
-	<br>
+            <td>[[${applyLeave.fromDate}]]</td>
 
-	<h2 class="text-center">Leave Status</h2>
+            <td>[[${applyLeave.noOfDays}]]</td>
 
-	<br>
+            <td>[[${applyLeave.leaveReason}]]</td>
 
-	<table class="table table-hover">
+            <td>[[${applyLeave.leaveCategory}]]</td>
 
-		<thead>
-		<tr>
-			<th>Employee ID</th>
-			<th>Leave ID</th>
-			<th>Leave From Date</th>
-			<th>No. of Days of Leave</th>
-			<th>Leave Reason</th>
-			<th>Leave Category</th>
-			<th>Leave Status</th>
-		</tr>
-		</thead>
-
-		<tbody>
-
-		<tr th:each="applyLeave : ${applyLeaves}">
-
-			<td>[[${applyLeave.employeeId}]]</td>
-
-			<!-- FIXED: leaveId instead of leaveid -->
-			<td>[[${applyLeave.leaveId}]]</td>
-
-			<td>[[${applyLeave.fromDate}]]</td>
-
-			<td>[[${applyLeave.noOfDays}]]</td>
-
-			<td>[[${applyLeave.leaveReason}]]</td>
-
-			<td>[[${applyLeave.leaveCategory}]]</td>
-
-			<td>[[${applyLeave.leaveStatus}]]</td>
-
-		</tr>
-
-		</tbody>
-
-	</table>
-
+            <td>[[${applyLeave.leaveStatus}]]</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-
 </body>
 </html>
