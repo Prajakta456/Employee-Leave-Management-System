@@ -1,56 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="ISO-8859-1">
-<title>View pending Leave Details</title>
+	<meta charset="UTF-8">
+	<title>View Pending Leave Details</title>
 
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
-<script type="text/javascript" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
-<script type="text/javascript" th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+	<link rel="stylesheet"
+		  type="text/css"
+		  th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}">
+
+	<script type="text/javascript"
+			th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}">
+	</script>
+
+	<script type="text/javascript"
+			th:src="@{/webjars/jquery/3.6.0/jquery.min.js}">
+	</script>
 </head>
 
 <body>
 
 <div th:replace="navbar" class="container">
-
 </div>
 
 <div class="container">
-<h1>Leave Details</h1>
-<div th:if="${message!=null}" class="alert alert-success text-center">
-  [[${message}]]
-</div>
-    
+
+	<h1>Pending Leave Details</h1>
+
+	<div th:if="${message != null}"
+		 class="alert alert-success text-center">
+		[[${message}]]
+	</div>
+
 	<table class="table table-hover">
-	
+
+		<thead>
 		<tr>
-		    <th>Leave ID</th>
-	   	    <th>Employee Id</th>
+			<th>Leave ID</th>
+			<th>Employee ID</th>
 			<th>Leave From Date</th>
-			<th>No of Days leave is requested</th>
+			<th>No. of Days Leave Requested</th>
 			<th>Leave Category</th>
 			<th>Leave Reason</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+
+		<tbody>
+
+		<tr th:each="leave : ${pendingLeaves}">
+
+			<!-- IMPORTANT: leaveId, not leaveid -->
+			<td>[[${leave.leaveId}]]</td>
+
+			<td>[[${leave.employeeId}]]</td>
+
+			<td>[[${leave.fromDate}]]</td>
+
+			<td>[[${leave.noOfDays}]]</td>
+
+			<td>[[${leave.leaveCategory}]]</td>
+
+			<!-- IMPORTANT: leaveReason, not LeaveReason -->
+			<td>[[${leave.leaveReason}]]</td>
+
+			<td>
+				<a th:href="@{/employees/leave/allleaves/updatepending/{leaveid}(leaveid=${leave.leaveId})}"
+				   class="btn btn-primary">
+					Approve
+				</a>
+			</td>
 
 		</tr>
-		<tr th:each="leave:${pendingLeaves}">
-		    <td>[[${leave.leaveid}]]</td>
-			<td>[[${leave.employeeId}]]</td>
-			<td>[[${leave.fromDate}]]</td>
-			<td>[[${leave.noOfDays}]]</td>
-			<td>[[${leave.leaveCategory}]]</td>
-			<td>[[${leave.LeaveReason}]]</td>
-			
-			
-			<td><a th:href="@{'/employees/leave/allleaves/updatepending/'+${leave.leaveid}}">
-			<button class="btn btn-primary">Approve</button>
-			</a></td>
-			
-		</tr>
+
+		</tbody>
+
 	</table>
-	
-	
-	</div>
-	
+
+</div>
+
 </body>
 </html>
