@@ -1,9 +1,14 @@
 package employeeManagement.repository;
 
-import org.springframework.data.repository.CrudRepository;
-
 import employeeManagement.entity.Employee;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
+import java.util.Optional;
 
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+
+    @Override
+    @EntityGraph(attributePaths = {"roles"})
+    Optional<Employee> findById(Integer employeeId);
 }

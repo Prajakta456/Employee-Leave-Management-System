@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import employeeManagement.entity.Employee;
@@ -17,20 +18,35 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepo;
     private final RoleRepo roleRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmployeeService(EmployeeRepository employeeRepo,
-                           RoleRepo roleRepo) {
+    public EmployeeService(
+            EmployeeRepository employeeRepo,
+            RoleRepo roleRepo,
+            PasswordEncoder passwordEncoder) {
+
         this.employeeRepo = employeeRepo;
         this.roleRepo = roleRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // Get all employees
+    // =========================================================
+    // GET ALL EMPLOYEES
+    // =========================================================
+
     public List<Employee> getAllEmployee() {
+
         return (List<Employee>) employeeRepo.findAll();
     }
 
-    // Get employee by ID
-    @Cacheable(value = "employees", key = "#id")
+    // =========================================================
+    // GET EMPLOYEE BY ID
+    // =========================================================
+
+    @Cacheable(
+            value = "employees",
+            key = "#id"
+    )
     public Employee findEmployeeById(int id)
             throws EmployeeNotFoundException {
 
@@ -44,12 +60,10 @@ public class EmployeeService {
                                         + id));
     }
 
-    // Save or update employee
-    //
-    // After saving:
-    // employees[employeeId] = updated employee
-    //
-    // This means the cache is updated immediately.
+    // =========================================================
+    // SAVE OR UPDATE EMPLOYEE
+    // =========================================================
+
     @CachePut(
             value = "employees",
             key = "#result.employeeId"
@@ -57,31 +71,82 @@ public class EmployeeService {
     public Employee saveEmployee(Employee employee)
             throws EmployeeNotFoundException {
 
-        // Existing employee
-        if (employee.getEmployeeId() != 0) {
+        // -----------------------------------------------------
+        // NEW EMPLOYEE
+        // -----------------------------------------------------
+
+        if (employee.getEmployeeId() == 0) {
+
+            /*
+             * New employee:
+             *
+             * Convert plain-text password into BCrypt
+             * before storing it in the database.
+             */
+            if (employee.getPassword() != null
+                    && !employee.getPassword().isBlank()) {
+
+                employee.setPassword(
+                        passwordEncoder.encode(
+                                employee.getPassword()
+                        )
+                );
+            }
+        }
+
+        // -----------------------------------------------------
+        // EXISTING EMPLOYEE
+        // -----------------------------------------------------
+
+        else {
 
             Employee existingEmployee =
                     employeeRepo.findById(
-                                    employee.getEmployeeId())
-                            .orElseThrow(() ->
-                                    new EmployeeNotFoundException(
-                                            "Could not find any employee with ID "
-                                                    + employee.getEmployeeId()));
+                            employee.getEmployeeId()
+                    ).orElseThrow(() ->
+                            new EmployeeNotFoundException(
+                                    "Could not find any employee with ID "
+                                            + employee.getEmployeeId()
+                            )
+                    );
 
-            // Keep the existing password if no new password
-            // was entered during update.
+            /*
+             * If the password field is empty during update,
+             * keep the existing BCrypt password.
+             */
             if (employee.getPassword() == null
-                    || employee.getPassword().isEmpty()) {
+                    || employee.getPassword().isBlank()) {
 
                 employee.setPassword(
-                        existingEmployee.getPassword());
+                        existingEmployee.getPassword()
+                );
+            }
+
+            /*
+             * If a new password was entered during update,
+             * encode it with BCrypt.
+             *
+             * We don't encode the existing BCrypt password
+             * again because the existing password is only
+             * copied when the field is empty.
+             */
+            else {
+
+                employee.setPassword(
+                        passwordEncoder.encode(
+                                employee.getPassword()
+                        )
+                );
             }
         }
 
         return employeeRepo.save(employee);
     }
 
-    // Get all roles
+    // =========================================================
+    // GET ALL ROLES
+    // =========================================================
+
     @Cacheable(
             value = "roles",
             key = "'all'"
@@ -94,20 +159,35 @@ public class EmployeeService {
         return (List<Role>) roleRepo.findAll();
     }
 
-    // Check login credentials
+    // =========================================================
+    // CHECK LOGIN CREDENTIALS
+    // =========================================================
+
+    /*
+     * This method may no longer be used by Spring Security,
+     * because CustomUserDetailsService handles authentication.
+     *
+     * However, if another part of your old application calls
+     * this method, BCrypt must be checked using matches().
+     */
     public boolean isLoginSuccessful(
             int id,
             String password)
             throws EmployeeNotFoundException {
 
-        if (id <= 0 || password == null) {
+        if (id <= 0
+                || password == null
+                || password.isBlank()) {
+
             return false;
         }
 
         Employee employee =
                 findEmployeeById(id);
 
-        return password.equals(
-                employee.getPassword());
+        return passwordEncoder.matches(
+                password,
+                employee.getPassword()
+        );
     }
 }
